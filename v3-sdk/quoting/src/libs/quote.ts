@@ -48,10 +48,6 @@ export async function swap(): Promise<string> {
     CurrentConfig.tokens.in
   )
   console.log('tokenInApproval', tokenInApproval)
-  // const tokenOutApproval = await getTokenTransferApproval(
-  //   CurrentConfig.tokens.token1
-  // )
-  // console.log('tokenOutApproval', tokenOutApproval)
 
   const quoterContract = new ethers.Contract(
     QUOTER_CONTRACT_ADDRESS,
