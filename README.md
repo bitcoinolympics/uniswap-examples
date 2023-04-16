@@ -9,5 +9,6 @@ To create a new guide, consider starting with an available template. Currently t
 - Running against a local copy of mainnet
 - Running against a Web3 wallet
 - Running against the Ethereum mainnet
+- Running against ###RSK!
 
 Categorize your example by the relevant folder (e.g `v3_sdk/`) and then a folder for the example (e.g `v3_sdk/routing`)
