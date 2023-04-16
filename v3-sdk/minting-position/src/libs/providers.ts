@@ -72,6 +72,8 @@ function createWallet(): ethers.Wallet {
   let provider = mainnetProvider
   if (CurrentConfig.env == Environment.LOCAL) {
     provider = new ethers.providers.JsonRpcProvider(CurrentConfig.rpc.local)
+  } else if (CurrentConfig.env == Environment.RSK_TESTNET) {
+    provider = new ethers.providers.JsonRpcProvider(CurrentConfig.rpc.rsk.testnet)
   }
   return new ethers.Wallet(CurrentConfig.wallet.privateKey, provider)
 }
@@ -111,8 +113,9 @@ async function sendTransactionViaWallet(
   if (transaction.value) {
     transaction.value = BigNumber.from(transaction.value)
   }
+  console.log(`Sending transaction:`, transaction)
   const txRes = await wallet.sendTransaction(transaction)
-
+  console.log(`Transaction result:`, txRes)
   let receipt = null
   const provider = getProvider()
   if (!provider) {
@@ -134,6 +137,7 @@ async function sendTransactionViaWallet(
 
   // Transaction was successful if status === 1
   if (receipt) {
+    console.log(receipt);
     return TransactionState.Sent
   } else {
     return TransactionState.Failed

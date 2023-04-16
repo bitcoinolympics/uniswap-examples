@@ -20,6 +20,7 @@ export async function getPoolInfo(): Promise<PoolInfo> {
   if (!provider) {
     throw new Error('No provider')
   }
+  console.log('provider', provider)
 
   const currentPoolAddress = computePoolAddress({
     factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
@@ -27,6 +28,8 @@ export async function getPoolInfo(): Promise<PoolInfo> {
     tokenB: CurrentConfig.tokens.token1,
     fee: CurrentConfig.tokens.poolFee,
   })
+
+  console.log('currentPoolAddress', currentPoolAddress)
 
   const poolContract = new ethers.Contract(
     currentPoolAddress,

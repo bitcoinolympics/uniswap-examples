@@ -46,9 +46,11 @@ export async function mintPosition(): Promise<TransactionState> {
   const tokenInApproval = await getTokenTransferApproval(
     CurrentConfig.tokens.token0
   )
+  console.log('tokenInApproval', tokenInApproval)
   const tokenOutApproval = await getTokenTransferApproval(
     CurrentConfig.tokens.token1
   )
+  console.log('tokenOutApproval', tokenOutApproval)
 
   // Fail if transfer approvals do not go through
   if (
@@ -74,6 +76,7 @@ export async function mintPosition(): Promise<TransactionState> {
       )
     )
   )
+  console.log('positionToMint', positionToMint)
 
   const mintOptions: MintOptions = {
     recipient: address,
@@ -86,6 +89,7 @@ export async function mintPosition(): Promise<TransactionState> {
     positionToMint,
     mintOptions
   )
+  console.log('calldata', calldata, 'value', value)
 
   // build transaction
   const transaction = {
@@ -95,6 +99,7 @@ export async function mintPosition(): Promise<TransactionState> {
     from: address,
     maxFeePerGas: MAX_FEE_PER_GAS,
     maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS,
+    gasLimit: 2000000,
   }
 
   return sendTransaction(transaction)
@@ -106,6 +111,8 @@ export async function constructPosition(
 ): Promise<Position> {
   // get pool info
   const poolInfo = await getPoolInfo()
+
+  console.log('poolInfo', poolInfo)
 
   // construct pool instance
   const configuredPool = new Pool(
@@ -122,10 +129,10 @@ export async function constructPosition(
     pool: configuredPool,
     tickLower:
       nearestUsableTick(poolInfo.tick, poolInfo.tickSpacing) -
-      poolInfo.tickSpacing * 2,
+      poolInfo.tickSpacing * 200,
     tickUpper:
       nearestUsableTick(poolInfo.tick, poolInfo.tickSpacing) +
-      poolInfo.tickSpacing * 2,
+      poolInfo.tickSpacing * 200,
     amount0: token0Amount.quotient,
     amount1: token1Amount.quotient,
     useFullPrecision: true,
@@ -172,6 +179,7 @@ export async function getPositionInfo(tokenId: number): Promise<PositionInfo> {
   )
 
   const position = await positionContract.positions(tokenId)
+  console.log('position', JSON.stringify(position))
 
   return {
     tickLower: position.tickLower,
@@ -203,7 +211,7 @@ export async function getTokenTransferApproval(
 
     const transaction = await tokenContract.populateTransaction.approve(
       NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
-      TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER
+      BigNumber.from(TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER)
     )
 
     return sendTransaction({
